@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>圣诞快乐 - 愿美好常伴</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 50%, #1e1b4b 100%);
+            touch-action: manipulation;
+        }
+
+        .font-festive {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        #snow-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px #ffffff, 0 0 20px #ffd700, 0 0 30px #f59e0b;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #fff, 0 0 20px #ffd700; }
+            to { text-shadow: 0 0 20px #fff, 0 0 30px #ffeb3b, 0 0 40px #fbbf24; }
+        }
+
+        .gift-box {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .gift-box:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .gift-box:active {
+            transform: scale(0.95);
+        }
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-1deg); }
+            20%, 80% { transform: translate3d(2px, 0, 0) rotate(2deg); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotate(-4deg); }
+            40%, 60% { transform: translate3d(4px, 0, 0) rotate(4deg); }
+        }
+
+        .tree-container {
+            position: relative;
+            width: 180px;
+            height: 240px;
+            margin: 0 auto;
+            filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.3));
+        }
+        @media (min-width: 768px) {
+            .tree-container {
+                width: 220px;
+                height: 280px;
+            }
+        }
+        
+        .star {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-size: 40px;
+            z-index: 10;
+            animation: twinkle 1.5s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.6; transform: translateX(-50%) scale(0.9); }
+            to { opacity: 1; transform: translateX(-50%) scale(1.2); text-shadow: 0 0 15px gold; }
+        }
+    </style>
+</head>
+<body class="h-[100dvh] w-screen flex flex-col items-center justify-center relative text-white">
+
+    <!-- 隐藏的音频元素 -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://rueyyuan.github.io/sdj/sdj.ogg" type="audio/ogg">
+    </audio>
+
+    <canvas id="snow-canvas"></canvas>
+
+    <!-- 已移除右上角的控制按钮 -->
+
+    <!-- Main Content Container -->
+    <div class="relative z-10 flex flex-col items-center justify-start md:justify-center h-full md:h-auto w-full max-w-lg px-6 text-center pt-16 md:pt-0 pb-10">
+        
+        <!-- Animated Title -->
+        <div class="flex flex-col items-center mb-10 md:mb-6">
+            <h1 class="font-festive text-5xl sm:text-6xl md:text-7xl mb-2 text-white glow-text select-none">
+                圣诞快乐
+            </h1>
+            <p class="text-blue-100/80 text-base sm:text-lg md:text-xl font-light tracking-wider">
+                MERRY CHRISTMAS & HAPPY NEW YEAR
+            </p>
+        </div>
+
+        <!-- CSS Christmas Tree -->
+        <div class="tree-container relative group cursor-pointer active:scale-95 transition-transform mb-8 md:mb-0" onclick="shakeTree()">
+            <div class="star">★</div>
+            <i data-lucide="shrub" class="w-full h-full text-green-400 fill-green-500/40"></i>
+            
+            <div class="absolute top-1/3 left-1/3 w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_white]"></div>
+            <div class="absolute top-1/2 right-1/4 w-3 h-3 bg-yellow-300 rounded-full animate-pulse delay-75 shadow-[0_0_8px_gold]"></div>
+            <div class="absolute bottom-1/3 left-1/4 w-3 h-3 bg-blue-300 rounded-full animate-pulse delay-150 shadow-[0_0_8px_cyan]"></div>
+            <div class="absolute bottom-1/4 right-1/3 w-3 h-3 bg-pink-400 rounded-full animate-pulse delay-300 shadow-[0_0_8px_pink]"></div>
+        </div>
+
+        <!-- Main Interaction Area -->
+        <div class="w-full flex flex-col items-center gap-4 sm:gap-6 mt-auto md:mt-8">
+            <p class="text-white/70 animate-bounce text-xs sm:text-sm font-light">点击下方礼物盒接收祝福</p>
+            
+            <button id="gift-btn" class="gift-box relative group bg-gradient-to-br from-red-600 to-red-800 p-6 sm:p-7 rounded-2xl shadow-2xl border-2 border-yellow-400/40">
+                <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-4 bg-yellow-400 shadow-sm"></div>
+                <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-4 bg-yellow-400 shadow-sm"></div>
+                <i data-lucide="gift" class="w-12 h-12 text-white relative z-10"></i>
+            </button>
+        </div>
+
+        <div class="mt-8 text-white/30 text-[10px] sm:text-xs">
+            © 2025 献给特别的你
+        </div>
+    </div>
+
+    <!-- Blessing Modal -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden flex items-center justify-center opacity-0 transition-opacity duration-500">
+        <div id="modal-card" class="bg-white text-gray-800 rounded-xl p-6 sm:p-8 w-[85%] max-w-sm mx-auto shadow-2xl transform scale-90 transition-transform duration-500 relative border-4 border-blue-100">
+            <button onclick="closeModal()" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-red-500 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="absolute -top-5 -left-5 text-red-600 transform -rotate-12">
+                <i data-lucide="candy-cane" class="w-10 h-10 sm:w-12 sm:h-12"></i>
+            </div>
+
+            <div class="text-center pt-4">
+                <h3 class="font-festive text-2xl sm:text-3xl text-red-600 mb-4">祝福送达</h3>
+                <div class="w-full h-px bg-gradient-to-r from-transparent via-red-200 to-transparent mb-6"></div>
+                <p id="blessing-text" class="text-base sm:text-lg leading-relaxed text-gray-700 font-medium mb-8 min-h-[80px] flex items-center justify-center"></p>
+                <button onclick="handleCollect()" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-all transform active:scale-95">
+                    收下祝福
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const targetUrl = "https://rueyyuan.github.io/sdj/index2.html"; 
+
+        const blessings = [
+            "愿你的圣诞充满爱与欢笑，新的一年里，所有的梦想都能开花结果！🎄",
+            "在这温暖的节日里，祝你平安喜乐，万事顺遂，好运“圣”过往昔！✨",
+            "圣诞老人托我告诉你：你今年表现特别棒，明年会有双倍的好运等着你！🎅",
+            "不是因为节日才祝福你，而是因为节日，让我有理由把藏在心里的祝福大声送给你！❄️",
+            "愿你被这个世界温柔以待，愿你目之所及，皆是美好。圣诞快乐！🎁",
+            "把所有的霉运都留在雪地里，把所有的好运都装进袜子里。祝你圣诞快乐！🧦",
+            "愿闪烁的灯光照亮你的前程，愿温暖的壁炉驱散寒冷。祝你和家人幸福安康！🔥",
+            "叮叮当，叮叮当，铃儿响叮当！快乐的钟声为你而响，幸福的生活因你而亮。🔔",
+            "愿你的生活像圣诞树的顶端一样，永远闪闪发光！🌟"
+        ];
+
+        const audio = document.getElementById('bg-music');
+        let musicInitialized = false;
+
+        // 核心逻辑：用户与页面产生任何交互即启动音频
+        const initMusic = () => {
+            if (musicInitialized) return;
+            audio.play().then(() => {
+                musicInitialized = true;
+                // 启动后移除监听器
+                ['click', 'touchstart', 'keydown'].forEach(evt => 
+                    document.removeEventListener(evt, initMusic)
+                );
+            }).catch(e => {
+                console.log("Waiting for user interaction to play music...");
+            });
+        };
+
+        ['click', 'touchstart', 'keydown'].forEach(evt => 
+            document.addEventListener(evt, initMusic, { once: true })
+        );
+
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const flakes = [];
+        const flakeCount = window.innerWidth < 768 ? 50 : 100;
+
+        class Flake {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.radius = Math.random() * 2 + 1;
+                this.speed = Math.random() * 1 + 0.5;
+                this.wind = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.wind;
+                if (this.y > height) { this.y = 0; this.x = Math.random() * width; }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < flakeCount; i++) { flakes.push(new Flake()); }
+
+        function animateSnow() {
+            ctx.clearRect(0, 0, width, height);
+            flakes.forEach(f => { f.update(); f.draw(); });
+            requestAnimationFrame(animateSnow);
+        }
+        animateSnow();
+
+        const giftBtn = document.getElementById('gift-btn');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const blessingText = document.getElementById('blessing-text');
+
+        function shakeTree() {
+            const tree = document.querySelector('.tree-container');
+            tree.classList.add('shake');
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.4 }, colors: ['#FFD700', '#FFFFFF'] });
+            setTimeout(() => tree.classList.remove('shake'), 500);
+        }
+
+        giftBtn.addEventListener('click', () => {
+            giftBtn.classList.add('shake');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#FFD700', '#FFFFFF', '#FF0000'] });
+            setTimeout(() => {
+                blessingText.textContent = blessings[Math.floor(Math.random() * blessings.length)];
+                modalOverlay.classList.remove('hidden');
+                setTimeout(() => modalOverlay.classList.remove('opacity-0'), 10);
+            }, 600);
+            setTimeout(() => giftBtn.classList.remove('shake'), 500);
+        });
+
+        function handleCollect() {
+            modalOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 300);
+        }
+
+        function closeModal() {
+            modalOverlay.classList.add('opacity-0');
+            setTimeout(() => modalOverlay.classList.add('hidden'), 500);
+        }
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+    </script>
+</body>
+</html>
